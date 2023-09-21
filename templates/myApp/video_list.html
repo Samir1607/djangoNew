@@ -1,0 +1,21 @@
+<!-- video_list.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Video List</title>
+</head>
+<body>
+    <h1>Video List</h1>
+    <ul>
+        {% for video in videos %}
+            <li>
+                {{ video.name }} - <a href="{% url 'stream-video' video.id %}">Watch</a>  <!-- Use the correct URL pattern name 'watch-video' here. -->
+            </li>
+        {% empty %}
+            <li>No videos available.</li>
+        {% endfor %}
+    </ul>
+    <a href="{% url 'upload-video' %}">Upload a Video</a>
+</body>
+</html>

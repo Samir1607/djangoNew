@@ -1,10 +1,17 @@
 from django.shortcuts import render
+from django.views import View
 from rest_framework import viewsets
-from .models import Students
-from .serializers import StudentsSerializer, StudentsForm # You need to create a serializer for your model
+from .models import Students, Video_1
+from .serializers import StudentsSerializer, StudentsForm, VideoSerializer, VideoUploadForm # You need to create a serializer for your model
 from django.shortcuts import render, get_object_or_404, redirect
-from django.http import JsonResponse
+from django.http import FileResponse, JsonResponse
 import json
+from rest_framework.parsers import FileUploadParser
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from rest_framework import status
+from rest_framework.parsers import MultiPartParser
+from django.http import FileResponse, StreamingHttpResponse
 
 
 class StudentsViewSet(viewsets.ModelViewSet):
@@ -72,3 +79,43 @@ def api_create_Students(request):
                 "error": "Invalid data",
             }
             return JsonResponse(data, status=400)
+
+
+def upload_video(request):
+    if request.method == 'POST':
+        form = VideoUploadForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect('video-list')  # Redirect to video list after successful upload
+    else:
+        form = VideoUploadForm()
+    return render(request, 'myApp/upload_video.html', {'form': form})
+
+def video_list(request):
+    videos = Video_1.objects.all()
+    return render(request, 'myApp/video_list.html', {'videos': videos})
+
+class VideoWatchView(View):
+    def get(self, request, pk):
+        video = get_object_or_404(Video_1, pk=pk)
+        video_file = video.vid
+        response = FileResponse(video_file.open('rb'))
+        response['Content-Disposition'] = f'attachment; filename="{video_file.name}"'
+        return response
+
+def stream_video(request, pk):
+    video = get_object_or_404(Video_1, pk=pk)
+    video_file = video.vid
+    chunk_size = 8192  # You can adjust the chunk size as needed
+
+    def file_iterator(file_path, chunk_size):
+        with open(file_path, 'rb') as f:
+            while True:
+                chunk = f.read(chunk_size)
+                if not chunk:
+                    break
+                yield chunk
+
+    response = StreamingHttpResponse(file_iterator(video_file.path, chunk_size), content_type='video/mp4')
+    response['Content-Disposition'] = f'inline; filename="{video_file.name}"'
+    return response

@@ -6,7 +6,7 @@ from . import views
 router = DefaultRouter()
 router.register(r'students', StudentsViewSet)
 
-urlpatterns = [
+urlpatterns = [    
     path('', include(router.urls)),
     path("student/", views.Students_list, name="Students_list"),
     path("student/<int:pk>/", views.Students_detail, name="Students_detail"),
@@ -15,4 +15,10 @@ urlpatterns = [
     path("student/delete/<int:pk>/", views.delete_Students, name="delete_Students"),
     path("api/student/<int:pk>/", views.api_get_Students, name="api_get_Students"),
     path("api/student/create/", views.api_create_Students, name="api_create_Students"),
+    path('upload/', views.upload_video, name='upload-video'),
+    path('videos/<int:pk>/', views.VideoWatchView.as_view(), name='watch-video'),
+    path('videos/', views.video_list, name='video-list'),
+    path('stream/<int:pk>/', views.stream_video, name='stream-video'),
+
+
 ]
