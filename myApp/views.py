@@ -11,12 +11,6 @@ class StudentsViewSet(viewsets.ModelViewSet):
     queryset = Students.objects.all()
     serializer_class = StudentsSerializer
 
-
-# def sam(request):
-#     name1 = request.get('name')
-#     age1 = request.get('age')
-#     city1 = request.get('city')
-
 def Students_list(request):
     people = Students.objects.all()
     return render(request, "myapp/Students_list.html", {"people": people})
