@@ -1,0 +1,5 @@
+<!-- List of Students -->
+{% for st in people %}
+<a href="{% url 'Students_detail' st.pk %}">{{ st.name }}</a>
+<br>
+{% endfor %}

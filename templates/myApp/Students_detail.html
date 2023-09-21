@@ -1,0 +1,6 @@
+<!-- Student Details -->
+<h2>{{ St.name }}</h2>
+<p>Age: {{ St.age }}</p>
+<p>City: {{ St.city }}</p>
+<a href="{% url 'update_Students' St.pk %}">Edit</a>
+<a href="{% url 'delete_Students' St.pk %}">Delete</a>
